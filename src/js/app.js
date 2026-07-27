@@ -24,7 +24,7 @@ async function loadPublicConfig() {
     }
 }
 
-// Handle video autoplay and controls (lazy-loaded)
+// Handle video autoplay and controls
 function initializeVideo() {
     const video = document.getElementById("videoPlayer");
     const phone = document.querySelector(".phone");
@@ -43,6 +43,9 @@ function initializeVideo() {
 
     let videoSourceAttached = false;
     let progressFrame = null;
+    let pendingPlay = false;
+
+    video.muted = false;
 
     const formatTime = (seconds) => {
         if (!isFinite(seconds)) return "0:00";
@@ -60,27 +63,6 @@ function initializeVideo() {
         window.setTimeout(() => overlay.classList.remove("active"), 3000);
     };
 
-    const tryToPlay = () => {
-        const playPromise = video.play();
-
-        if (playPromise !== undefined) {
-            playPromise
-                .then(() => {
-                    updatePlayPauseIcon();
-                })
-                .catch(() => {
-                    const playOnInteraction = () => {
-                        video.play().catch(() => {});
-                        updatePlayPauseIcon();
-                        showOverlayBriefly();
-                    };
-
-                    document.addEventListener("click", playOnInteraction, { once: true });
-                    document.addEventListener("touchstart", playOnInteraction, { once: true });
-                });
-        }
-    };
-
     const attachVideoSource = () => {
         if (videoSourceAttached) return;
         videoSourceAttached = true;
@@ -92,17 +74,53 @@ function initializeVideo() {
         video.load();
     };
 
-    const onVideoReady = () => {
+    const markVideoReady = () => {
         video.classList.add("is-ready");
         durationDisplay.textContent = formatTime(video.duration);
-        tryToPlay();
+    };
+
+    const tryToPlay = () => {
+        const playPromise = video.play();
+
+        if (playPromise === undefined) return;
+
+        playPromise
+            .then(() => {
+                markVideoReady();
+                updatePlayPauseIcon();
+            })
+            .catch(() => {});
+    };
+
+    const startVideo = ({ fromUser = false } = {}) => {
+        attachVideoSource();
+
+        if (fromUser) {
+            video.muted = false;
+            soundToggle.classList.toggle("muted", false);
+        }
+
+        if (video.readyState >= 2) {
+            tryToPlay();
+            return;
+        }
+
+        pendingPlay = true;
+    };
+
+    const onVideoCanPlay = () => {
+        markVideoReady();
+
+        if (pendingPlay || video.autoplay) {
+            tryToPlay();
+        }
     };
 
     video.addEventListener("loadedmetadata", () => {
         durationDisplay.textContent = formatTime(video.duration);
     });
 
-    video.addEventListener("canplay", onVideoReady, { once: true });
+    video.addEventListener("canplay", onVideoCanPlay);
 
     video.addEventListener("timeupdate", () => {
         if (progressFrame) return;
@@ -122,7 +140,7 @@ function initializeVideo() {
         e.stopPropagation();
 
         if (video.paused) {
-            video.play();
+            startVideo({ fromUser: true });
         } else {
             video.pause();
         }
@@ -165,8 +183,20 @@ function initializeVideo() {
     soundToggle.classList.toggle("muted", video.muted);
     updatePlayPauseIcon();
 
-    const startLoadingVideo = () => {
+    const playOnInteraction = () => {
+        if (!video.paused && videoSourceAttached && video.readyState >= 2) {
+            return;
+        }
+
+        startVideo({ fromUser: true });
+    };
+
+    document.addEventListener("click", playOnInteraction);
+    document.addEventListener("touchstart", playOnInteraction, { passive: true });
+
+    const preloadVideo = () => {
         attachVideoSource();
+        pendingPlay = true;
     };
 
     if ("IntersectionObserver" in window) {
@@ -174,30 +204,30 @@ function initializeVideo() {
             (entries) => {
                 if (entries.some((entry) => entry.isIntersecting)) {
                     observer.disconnect();
-                    startLoadingVideo();
+                    preloadVideo();
                 }
             },
             { rootMargin: "120px" }
         );
 
         observer.observe(phone);
-    } else if ("requestIdleCallback" in window) {
-        requestIdleCallback(startLoadingVideo, { timeout: 1500 });
     } else {
-        window.setTimeout(startLoadingVideo, 300);
+        preloadVideo();
     }
+
+    window.setTimeout(() => {
+        if (!videoSourceAttached) {
+            preloadVideo();
+        }
+
+        if (video.readyState >= 2) {
+            tryToPlay();
+        }
+    }, 500);
 }
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-        if ("requestIdleCallback" in window) {
-            requestIdleCallback(initializeVideo, { timeout: 1200 });
-        } else {
-            window.setTimeout(initializeVideo, 0);
-        }
-    });
-} else if ("requestIdleCallback" in window) {
-    requestIdleCallback(initializeVideo, { timeout: 1200 });
+    document.addEventListener("DOMContentLoaded", initializeVideo);
 } else {
     initializeVideo();
 }
