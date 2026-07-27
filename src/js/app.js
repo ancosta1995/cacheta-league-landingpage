@@ -24,9 +24,10 @@ async function loadPublicConfig() {
     }
 }
 
-// Handle video autoplay and controls
+// Handle video autoplay and controls (lazy-loaded)
 function initializeVideo() {
     const video = document.getElementById("videoPlayer");
+    const phone = document.querySelector(".phone");
     const soundToggle = document.getElementById("soundToggle");
     const playPauseBtn = document.getElementById("playPauseBtn");
     const playPauseIcon = document.getElementById("playPauseIcon");
@@ -38,9 +39,10 @@ function initializeVideo() {
     const durationDisplay = document.getElementById("duration");
     const overlay = document.querySelector(".phone__overlay");
 
-    if (!video) return;
+    if (!video || !phone) return;
 
-    video.muted = false;
+    let videoSourceAttached = false;
+    let progressFrame = null;
 
     const formatTime = (seconds) => {
         if (!isFinite(seconds)) return "0:00";
@@ -49,19 +51,72 @@ function initializeVideo() {
         return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
     };
 
+    const updatePlayPauseIcon = () => {
+        playPauseIcon.textContent = video.paused ? "▶️" : "⏸";
+    };
+
+    const showOverlayBriefly = () => {
+        overlay.classList.add("active");
+        window.setTimeout(() => overlay.classList.remove("active"), 3000);
+    };
+
+    const tryToPlay = () => {
+        const playPromise = video.play();
+
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => {
+                    updatePlayPauseIcon();
+                })
+                .catch(() => {
+                    const playOnInteraction = () => {
+                        video.play().catch(() => {});
+                        updatePlayPauseIcon();
+                        showOverlayBriefly();
+                    };
+
+                    document.addEventListener("click", playOnInteraction, { once: true });
+                    document.addEventListener("touchstart", playOnInteraction, { once: true });
+                });
+        }
+    };
+
+    const attachVideoSource = () => {
+        if (videoSourceAttached) return;
+        videoSourceAttached = true;
+
+        const source = video.dataset.src;
+        if (!source) return;
+
+        video.src = source;
+        video.load();
+    };
+
+    const onVideoReady = () => {
+        video.classList.add("is-ready");
+        durationDisplay.textContent = formatTime(video.duration);
+        tryToPlay();
+    };
+
     video.addEventListener("loadedmetadata", () => {
         durationDisplay.textContent = formatTime(video.duration);
     });
 
-    video.addEventListener("timeupdate", () => {
-        const percentage = (video.currentTime / video.duration) * 100;
-        progressFill.style.width = `${percentage}%`;
-        currentTimeDisplay.textContent = formatTime(video.currentTime);
-    });
+    video.addEventListener("canplay", onVideoReady, { once: true });
 
-    const updatePlayPauseIcon = () => {
-        playPauseIcon.textContent = video.paused ? "▶️" : "⏸";
-    };
+    video.addEventListener("timeupdate", () => {
+        if (progressFrame) return;
+
+        progressFrame = window.requestAnimationFrame(() => {
+            progressFrame = null;
+
+            if (!video.duration) return;
+
+            const percentage = (video.currentTime / video.duration) * 100;
+            progressFill.style.width = `${percentage}%`;
+            currentTimeDisplay.textContent = formatTime(video.currentTime);
+        });
+    });
 
     playPauseBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -73,92 +128,76 @@ function initializeVideo() {
         }
 
         updatePlayPauseIcon();
-        overlay.classList.add("active");
-        setTimeout(() => overlay.classList.remove("active"), 3000);
+        showOverlayBriefly();
     });
 
     rewindBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         video.currentTime = Math.max(0, video.currentTime - 10);
-        overlay.classList.add("active");
-        setTimeout(() => overlay.classList.remove("active"), 3000);
+        showOverlayBriefly();
     });
 
     forwardBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         video.currentTime = Math.min(video.duration, video.currentTime + 10);
-        overlay.classList.add("active");
-        setTimeout(() => overlay.classList.remove("active"), 3000);
+        showOverlayBriefly();
     });
 
     progressBar.addEventListener("click", (e) => {
         const rect = progressBar.getBoundingClientRect();
         const percentage = (e.clientX - rect.left) / rect.width;
         video.currentTime = percentage * video.duration;
-        overlay.classList.add("active");
-        setTimeout(() => overlay.classList.remove("active"), 3000);
+        showOverlayBriefly();
     });
 
     soundToggle.addEventListener("click", (e) => {
         e.stopPropagation();
         video.muted = !video.muted;
         soundToggle.classList.toggle("muted", video.muted);
-        overlay.classList.add("active");
-        setTimeout(() => overlay.classList.remove("active"), 3000);
+        showOverlayBriefly();
     });
 
     video.addEventListener("play", updatePlayPauseIcon);
     video.addEventListener("pause", updatePlayPauseIcon);
 
-    video.addEventListener("click", () => {
-        overlay.classList.add("active");
-        setTimeout(() => overlay.classList.remove("active"), 3000);
-    });
+    video.addEventListener("click", showOverlayBriefly);
 
-    const tryToPlay = () => {
-        const playPromise = video.play();
+    soundToggle.classList.toggle("muted", video.muted);
+    updatePlayPauseIcon();
 
-        if (playPromise !== undefined) {
-            playPromise
-                .then(() => {
-                    updatePlayPauseIcon();
-                })
-                .catch((error) => {
-                    console.log("Autoplay prevented:", error);
-
-                    const playOnInteraction = () => {
-                        video.play().catch((err) => console.log("Play error:", err));
-                        updatePlayPauseIcon();
-                        overlay.classList.add("active");
-                        setTimeout(() => overlay.classList.remove("active"), 3000);
-
-                        document.removeEventListener("click", playOnInteraction);
-                        document.removeEventListener("touchstart", playOnInteraction);
-                    };
-
-                    document.addEventListener("click", playOnInteraction, {
-                        once: true,
-                    });
-                    document.addEventListener("touchstart", playOnInteraction, {
-                        once: true,
-                    });
-                });
-        }
+    const startLoadingVideo = () => {
+        attachVideoSource();
     };
 
-    if (video.readyState >= 2) {
-        tryToPlay();
-    } else {
-        video.addEventListener("canplay", tryToPlay, {
-            once: true,
-        });
-    }
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    observer.disconnect();
+                    startLoadingVideo();
+                }
+            },
+            { rootMargin: "120px" }
+        );
 
-    setTimeout(tryToPlay, 500);
+        observer.observe(phone);
+    } else if ("requestIdleCallback" in window) {
+        requestIdleCallback(startLoadingVideo, { timeout: 1500 });
+    } else {
+        window.setTimeout(startLoadingVideo, 300);
+    }
 }
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeVideo);
+    document.addEventListener("DOMContentLoaded", () => {
+        if ("requestIdleCallback" in window) {
+            requestIdleCallback(initializeVideo, { timeout: 1200 });
+        } else {
+            window.setTimeout(initializeVideo, 0);
+        }
+    });
+} else if ("requestIdleCallback" in window) {
+    requestIdleCallback(initializeVideo, { timeout: 1200 });
 } else {
     initializeVideo();
 }

@@ -314,6 +314,13 @@ input:focus-visible {
     height: 100%;
     object-fit: cover;
     transform: scale(1.02);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: #010716;
+}
+
+.phone__video.is-ready {
+    opacity: 1;
 }
 
 .phone__overlay {

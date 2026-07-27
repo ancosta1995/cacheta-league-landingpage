@@ -165,6 +165,19 @@ app.put("/api/admin/settings", requireAdmin, (req, res) => {
 });
 
 app.use("/admin", express.static(path.join(ROOT, "admin")));
+app.use(
+    "/assets/media",
+    express.static(path.join(ROOT, "assets", "media"), {
+        maxAge: "7d",
+        immutable: true,
+        setHeaders(res, filePath) {
+            if (filePath.endsWith(".mp4")) {
+                res.setHeader("Accept-Ranges", "bytes");
+                res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+            }
+        },
+    })
+);
 app.use(express.static(ROOT));
 
 app.listen(PORT, () => {

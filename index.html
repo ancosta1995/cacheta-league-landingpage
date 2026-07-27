@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="src/css/styles.css" />
+    <link rel="preload" as="image" href="assets/media/video-poster.jpg" />
 </head>
 
 <body>
@@ -45,7 +46,17 @@
                 <div class="phone__frame"></div>
 
                 <div class="phone__screen">
-                    <video class="phone__video" id="videoPlayer" src="assets/media/video.mp4" autoplay loop playsinline preload="auto"></video>
+                    <video
+                        class="phone__video"
+                        id="videoPlayer"
+                        poster="assets/media/video-poster.jpg"
+                        data-src="assets/media/video-lite.mp4"
+                        autoplay
+                        loop
+                        playsinline
+                        muted
+                        preload="none"
+                    ></video>
 
                     <div class="phone__overlay">
                         <div class="progress-bar">
