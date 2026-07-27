@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Cacheta League</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div class="admin" id="app">
+    <section class="card login-card" id="loginView">
+      <h1>Painel Admin</h1>
+      <p class="muted">Entre para ver leads e editar os links da landing page.</p>
+
+      <form id="loginForm" class="stack">
+        <label class="field">
+          <span>Senha</span>
+          <input type="password" id="loginPassword" autocomplete="current-password" required />
+        </label>
+        <p class="status" id="loginStatus" aria-live="polite"></p>
+        <button type="submit" class="btn btn--primary">Entrar</button>
+      </form>
+    </section>
+
+    <div class="dashboard hidden" id="dashboardView">
+      <header class="topbar">
+        <div>
+          <h1>Cacheta League</h1>
+          <p class="muted">Leads e configurações da landing page</p>
+        </div>
+        <button type="button" class="btn btn--ghost" id="logoutBtn">Sair</button>
+      </header>
+
+      <section class="card">
+        <h2>Configurações</h2>
+        <form id="settingsForm" class="stack">
+          <label class="field">
+            <span>Link de redirecionamento (Play Store)</span>
+            <input type="url" id="redirectUrl" required />
+          </label>
+
+          <label class="field">
+            <span>Link do WhatsApp</span>
+            <input type="url" id="whatsappUrl" required />
+          </label>
+
+          <p class="status" id="settingsStatus" aria-live="polite"></p>
+          <button type="submit" class="btn btn--primary">Salvar configurações</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="card__header">
+          <h2>Leads capturados</h2>
+          <button type="button" class="btn btn--ghost" id="refreshLeadsBtn">Atualizar</button>
+        </div>
+
+        <p class="muted" id="leadsCount">Carregando...</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTableBody">
+              <tr>
+                <td colspan="4" class="empty">Carregando leads...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

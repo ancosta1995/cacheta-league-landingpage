@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cacheta League</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="src/css/styles.css" />
+</head>
+
+<body>
+    <main class="hero">
+        <div class="hero__bg" aria-hidden="true"></div>
+
+        <div class="hero__content">
+            <section class="copy">
+                <header class="brand">
+                    <img src="assets/images/images-removebg-preview.png" alt="Cacheta League" class="brand__logo" />
+                </header>
+
+                <h1 class="title">
+                    <span class="title__line">
+              <span class="title__gold">CACHETA, TRUCO, TRANCA, PIF PAF BURACO</span>
+                    </span>
+                    <span class="title__line">
+              <span class="title__light">NO SEU CELULAR</span>
+                    </span>
+                    <span class="title__line">
+              <span class="title__accent">COM JOGADORES ONLINE DO BRASIL TODO!</span>
+                    </span>
+                </h1>
+
+                <a class="cta" href="#lead-form" id="openLeadForm">
+            Clique e baixe agora o aplicativo
+          </a>
+            </section>
+
+            <div class="phone" aria-hidden="true">
+                <div class="phone__frame"></div>
+
+                <div class="phone__screen">
+                    <video class="phone__video" id="videoPlayer" src="assets/media/video.mp4" autoplay loop playsinline preload="auto"></video>
+
+                    <div class="phone__overlay">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+
+                        <div class="phone__controls">
+                            <button class="control-btn rewind-btn" id="rewindBtn" aria-label="Voltar 10 segundos">
+                  <span>⏪</span>
+                </button>
+
+                            <button class="control-btn play-btn" id="playPauseBtn" aria-label="Pausar/Reproduzir">
+                  <span id="playPauseIcon">⏸</span>
+                </button>
+
+                            <button class="control-btn forward-btn" id="forwardBtn" aria-label="Avançar 10 segundos">
+                  <span>⏩</span>
+                </button>
+
+                            <div class="time-display">
+                                <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                            </div>
+
+                            <button class="control-btn sound-btn" id="soundToggle" aria-label="Ativar/desativar som">
+                  <span class="sound-icon">🔊</span>
+                </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="benefits" aria-label="Benefícios">
+                <ul class="benefits__list">
+                    <li class="benefits__item">
+                        <span class="benefits__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                  <rect x="2" y="7" width="20" height="5"></rect>
+                  <line x1="12" y1="22" x2="12" y2="7"></line>
+                  <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                  <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+                </svg>
+              </span>
+                        <span class="benefits__text">Ganhe 3 partidas Grátis</span>
+                    </li>
+
+                    <li class="benefits__item">
+                        <span class="benefits__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </span>
+                        <span class="benefits__text">Jogue a qualquer hora</span>
+                    </li>
+
+                    <li class="benefits__item">
+                        <span class="benefits__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                  <line x1="2" y1="10" x2="22" y2="10"></line>
+                </svg>
+              </span>
+                        <span class="benefits__text">Saques e depósitos na hora via pix</span>
+                    </li>
+
+                    <li class="benefits__item">
+                        <span class="benefits__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                  <path d="M4 22h16"></path>
+                  <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"></path>
+                  <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"></path>
+                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+                </svg>
+              </span>
+                        <span class="benefits__text">Torneios diários</span>
+                    </li>
+
+                    <li class="benefits__item">
+                        <span class="benefits__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </span>
+                        <span class="benefits__text">Aplicativo 100% seguro</span>
+                    </li>
+
+                    <li class="benefits__item">
+                        <span class="benefits__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="6"></circle>
+                  <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path>
+                </svg>
+              </span>
+                        <span class="benefits__text">Certificação da Gaming Labs Internacional (GLI)</span>
+                    </li>
+                </ul>
+
+                <p class="benefits__age" aria-label="Proibido para menores de 18 anos">+18 🔞</p>
+            </section>
+        </div>
+
+        <a class="floating-whatsapp" id="whatsappLink" href="https://api.whatsapp.com/send/?phone=5531971582866&text=Quero+jogar%21&type=phone_number&app_absent=0" target="_blank" rel="noreferrer" aria-label="Compartilhe no WhatsApp">
+        <img
+          src="assets/images/whatsapp-logo-whatsapp-icon-whatsapp-transparent-free-png.webp"
+          alt="WhatsApp"
+          class="floating-whatsapp__icon"
+        />
+      </a>
+    </main>
+
+    <div class="modal" id="leadModal" aria-hidden="true">
+        <div class="modal__backdrop" data-close-modal></div>
+
+        <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="leadFormTitle">
+            <button class="modal__close" type="button" aria-label="Fechar formulário" data-close-modal>
+          ×
+        </button>
+
+            <p class="modal__eyebrow">Acesso rápido</p>
+            <h2 class="modal__title" id="leadFormTitle">Receba o link agora</h2>
+            <p class="modal__text">Preencha seus dados para enviarmos e liberar o acesso na aplicativo.</p>
+
+            <form class="lead-form" id="leadForm">
+                <label class="field">
+            <span>Nome</span>
+            <input
+              type="text"
+              name="name"
+              id="leadName"
+              placeholder="Seu nome"
+              autocomplete="name"
+              required
+            />
+          </label>
+
+                <label class="field">
+            <span>Telefone</span>
+            <input
+              type="tel"
+              name="phone"
+              id="leadPhone"
+              placeholder="(31) 99999-9999"
+              autocomplete="tel"
+              inputmode="tel"
+              required
+            />
+          </label>
+
+                <p class="lead-form__status" id="leadStatus" aria-live="polite"></p>
+
+                <button class="lead-form__submit" type="submit">
+            Enviar e abrir o aplicativo
+          </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="src/js/app.js" defer></script>
+</body>
+
+</html>
