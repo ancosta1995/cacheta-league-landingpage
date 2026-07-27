@@ -22,6 +22,8 @@ async function loadPublicConfig() {
     if (whatsappLink && config.whatsappUrl) {
         whatsappLink.href = config.whatsappUrl;
     }
+
+    initMetaPixel(config.metaPixel);
 }
 
 // Handle video autoplay and controls
@@ -359,6 +361,8 @@ form.addEventListener("submit", async (event) => {
 
     try {
         await saveLead({ name, phone });
+
+        trackMetaLead();
 
         setStatus("Tudo certo. Abrindo a Play Store...", "success");
 

@@ -100,6 +100,46 @@ h2 {
   font: inherit;
 }
 
+.field select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  padding: 12px 14px;
+  font: inherit;
+}
+
+.field--checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.field--checkbox input {
+  width: auto;
+}
+
+.field--checkbox span {
+  color: var(--text);
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 8px 0;
+}
+
+.card__subtitle {
+  margin: 0;
+  font-size: 18px;
+}
+
+.card__hint {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .field input:focus-visible {
   outline: 2px solid rgba(255, 181, 71, 0.8);
   outline-offset: 2px;

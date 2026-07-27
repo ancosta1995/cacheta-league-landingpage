@@ -18,6 +18,10 @@ const DEFAULT_SETTINGS = {
     redirect_url: "https://cacheta.app.link/IJx9lE",
     whatsapp_url:
         "https://api.whatsapp.com/send/?phone=5531971582866&text=Quero+jogar%21&type=phone_number&app_absent=0",
+    meta_pixel_id: "",
+    meta_pixel_pageview: "1",
+    meta_pixel_lead_event: "registrou",
+    meta_pixel_lead_event_type: "custom",
 };
 
 if (!fs.existsSync(DATA_DIR)) {
@@ -55,6 +59,49 @@ for (const [key, value] of Object.entries(DEFAULT_SETTINGS)) {
 function getSettings() {
     const rows = db.prepare("SELECT key, value FROM settings").all();
     return Object.fromEntries(rows.map((row) => [row.key, row.value]));
+}
+
+function getMetaPixelConfig(settings) {
+    const pixelId = String(settings.meta_pixel_id || "").trim();
+
+    if (!pixelId) {
+        return null;
+    }
+
+    const leadEventName = String(settings.meta_pixel_lead_event || "").trim();
+    const leadEventType =
+        settings.meta_pixel_lead_event_type === "standard" ? "standard" : "custom";
+
+    return {
+        pixelId,
+        pageView: settings.meta_pixel_pageview !== "0",
+        leadEvent: leadEventName
+            ? {
+                  type: leadEventType,
+                  name: leadEventName,
+              }
+            : null,
+    };
+}
+
+function buildPublicConfig(settings) {
+    return {
+        redirectUrl: settings.redirect_url,
+        whatsappUrl: settings.whatsapp_url,
+        metaPixel: getMetaPixelConfig(settings),
+    };
+}
+
+function buildAdminSettings(settings) {
+    return {
+        redirectUrl: settings.redirect_url,
+        whatsappUrl: settings.whatsapp_url,
+        metaPixelId: settings.meta_pixel_id || "",
+        metaPixelPageView: settings.meta_pixel_pageview !== "0",
+        metaPixelLeadEvent: settings.meta_pixel_lead_event || "",
+        metaPixelLeadEventType:
+            settings.meta_pixel_lead_event_type === "standard" ? "standard" : "custom",
+    };
 }
 
 function requireAdmin(req, res, next) {
@@ -99,11 +146,7 @@ app.post("/api/leads", (req, res) => {
 });
 
 app.get("/api/config", (_req, res) => {
-    const settings = getSettings();
-    res.json({
-        redirectUrl: settings.redirect_url,
-        whatsappUrl: settings.whatsapp_url,
-    });
+    res.json(buildPublicConfig(getSettings()));
 });
 
 app.post("/api/admin/login", (req, res) => {
@@ -137,16 +180,17 @@ app.get("/api/admin/leads", requireAdmin, (_req, res) => {
 });
 
 app.get("/api/admin/settings", requireAdmin, (_req, res) => {
-    const settings = getSettings();
-    res.json({
-        redirectUrl: settings.redirect_url,
-        whatsappUrl: settings.whatsapp_url,
-    });
+    res.json(buildAdminSettings(getSettings()));
 });
 
 app.put("/api/admin/settings", requireAdmin, (req, res) => {
     const redirectUrl = String(req.body?.redirectUrl || "").trim();
     const whatsappUrl = String(req.body?.whatsappUrl || "").trim();
+    const metaPixelId = String(req.body?.metaPixelId || "").trim();
+    const metaPixelPageView = Boolean(req.body?.metaPixelPageView);
+    const metaPixelLeadEvent = String(req.body?.metaPixelLeadEvent || "").trim();
+    const metaPixelLeadEventType =
+        req.body?.metaPixelLeadEventType === "standard" ? "standard" : "custom";
 
     if (!redirectUrl.startsWith("http://") && !redirectUrl.startsWith("https://")) {
         res.status(400).json({ error: "Informe um link de redirecionamento válido." });
@@ -158,8 +202,22 @@ app.put("/api/admin/settings", requireAdmin, (req, res) => {
         return;
     }
 
+    if (metaPixelId && !/^\d{5,20}$/.test(metaPixelId)) {
+        res.status(400).json({ error: "Informe um ID de Pixel Meta válido (somente números)." });
+        return;
+    }
+
+    if (metaPixelId && metaPixelLeadEvent && !/^[A-Za-z][A-Za-z0-9_]{0,39}$/.test(metaPixelLeadEvent)) {
+        res.status(400).json({ error: "Informe um nome de evento válido para o Pixel Meta." });
+        return;
+    }
+
     setSettingStmt.run("redirect_url", redirectUrl);
     setSettingStmt.run("whatsapp_url", whatsappUrl);
+    setSettingStmt.run("meta_pixel_id", metaPixelId);
+    setSettingStmt.run("meta_pixel_pageview", metaPixelPageView ? "1" : "0");
+    setSettingStmt.run("meta_pixel_lead_event", metaPixelLeadEvent);
+    setSettingStmt.run("meta_pixel_lead_event_type", metaPixelLeadEventType);
 
     res.json({ ok: true });
 });

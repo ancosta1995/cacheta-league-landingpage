@@ -44,6 +44,36 @@
             <input type="url" id="whatsappUrl" required />
           </label>
 
+          <hr class="divider" />
+
+          <h3 class="card__subtitle">Meta Pixel</h3>
+          <p class="muted card__hint">Deixe o ID vazio para desativar o rastreamento.</p>
+
+          <label class="field">
+            <span>ID do Pixel Meta</span>
+            <input type="text" id="metaPixelId" inputmode="numeric" pattern="[0-9]*" placeholder="Ex: 123456789012345" />
+          </label>
+
+          <label class="field field--checkbox">
+            <input type="checkbox" id="metaPixelPageView" checked />
+            <span>Disparar PageView ao abrir a página</span>
+          </label>
+
+          <label class="field">
+            <span>Evento ao enviar o formulário</span>
+            <input type="text" id="metaPixelLeadEvent" placeholder="Ex: registrou" />
+          </label>
+
+          <label class="field">
+            <span>Tipo do evento</span>
+            <select id="metaPixelLeadEventType">
+              <option value="custom">Personalizado (trackCustom)</option>
+              <option value="standard">Padrão Meta (track)</option>
+            </select>
+          </label>
+
+          <p class="muted card__hint">Eventos padrão comuns: Lead, CompleteRegistration, Contact.</p>
+
           <p class="status" id="settingsStatus" aria-live="polite"></p>
           <button type="submit" class="btn btn--primary">Salvar configurações</button>
         </form>

@@ -7,6 +7,10 @@ const logoutBtn = document.getElementById("logoutBtn");
 const settingsForm = document.getElementById("settingsForm");
 const redirectUrlInput = document.getElementById("redirectUrl");
 const whatsappUrlInput = document.getElementById("whatsappUrl");
+const metaPixelIdInput = document.getElementById("metaPixelId");
+const metaPixelPageViewInput = document.getElementById("metaPixelPageView");
+const metaPixelLeadEventInput = document.getElementById("metaPixelLeadEvent");
+const metaPixelLeadEventTypeInput = document.getElementById("metaPixelLeadEventType");
 const settingsStatus = document.getElementById("settingsStatus");
 const leadsTableBody = document.getElementById("leadsTableBody");
 const leadsCount = document.getElementById("leadsCount");
@@ -72,6 +76,10 @@ async function loadSettings() {
     const data = await api("/api/admin/settings");
     redirectUrlInput.value = data.redirectUrl;
     whatsappUrlInput.value = data.whatsappUrl;
+    metaPixelIdInput.value = data.metaPixelId || "";
+    metaPixelPageViewInput.checked = Boolean(data.metaPixelPageView);
+    metaPixelLeadEventInput.value = data.metaPixelLeadEvent || "";
+    metaPixelLeadEventTypeInput.value = data.metaPixelLeadEventType || "custom";
 }
 
 async function loadLeads() {
@@ -156,6 +164,10 @@ settingsForm.addEventListener("submit", async (event) => {
             body: JSON.stringify({
                 redirectUrl: redirectUrlInput.value.trim(),
                 whatsappUrl: whatsappUrlInput.value.trim(),
+                metaPixelId: metaPixelIdInput.value.trim(),
+                metaPixelPageView: metaPixelPageViewInput.checked,
+                metaPixelLeadEvent: metaPixelLeadEventInput.value.trim(),
+                metaPixelLeadEventType: metaPixelLeadEventTypeInput.value,
             }),
         });
 
