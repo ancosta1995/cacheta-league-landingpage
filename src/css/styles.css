@@ -670,12 +670,42 @@ input:focus-visible {
     .benefits__item {
         align-items: flex-start;
     }
+    .hero__bg {
+        background:
+            radial-gradient(circle at 18% 22%, rgba(61, 92, 66, 0.14), rgba(20, 38, 28, 0.02) 45%),
+            radial-gradient(circle at 82% 72%, rgba(42, 74, 53, 0.12), rgba(42, 74, 53, 0) 36%),
+            linear-gradient(180deg, rgba(20, 38, 28, 0.45) 0%, rgba(42, 74, 53, 0.22) 38%, rgba(20, 38, 28, 0.5) 100%),
+            url("../../assets/backgrounds/background.jpg") center 42% / cover no-repeat;
+        filter: brightness(0.72) saturate(1.12) contrast(1.06);
+    }
+    .hero__bg::before {
+        background:
+            linear-gradient(180deg, rgba(20, 38, 28, 0.34) 0%, rgba(42, 74, 53, 0.08) 42%, rgba(20, 38, 28, 0.38) 100%),
+            radial-gradient(circle at center, transparent 42%, rgba(10, 22, 15, 0.22) 100%);
+    }
+    .hero__bg::after {
+        background: rgba(42, 74, 53, 0.08);
+    }
 }
 
 @media (max-width: 520px) {
     .hero {
         min-height: 100dvh;
         padding: 20px 14px 86px;
+    }
+    .hero__bg {
+        background:
+            linear-gradient(180deg, rgba(20, 38, 28, 0.28) 0%, rgba(42, 74, 53, 0.06) 36%, rgba(20, 38, 28, 0.32) 100%),
+            url("../../assets/backgrounds/background.jpg") center 38% / cover no-repeat;
+        filter: brightness(0.8) saturate(1.15) contrast(1.08);
+    }
+    .hero__bg::before {
+        background:
+            linear-gradient(180deg, rgba(20, 38, 28, 0.22) 0%, rgba(42, 74, 53, 0.04) 40%, rgba(20, 38, 28, 0.26) 100%),
+            radial-gradient(circle at center, transparent 48%, rgba(10, 22, 15, 0.14) 100%);
+    }
+    .hero__bg::after {
+        background: rgba(42, 74, 53, 0.04);
     }
     .hero__content {
         gap: 18px;
