@@ -68,12 +68,12 @@ body {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 18% 22%, rgba(61, 92, 66, 0.35), rgba(20, 38, 28, 0.08) 45%),
-        radial-gradient(circle at 82% 72%, rgba(42, 74, 53, 0.32), rgba(42, 74, 53, 0) 36%),
-        radial-gradient(circle at 10% 82%, rgba(45, 80, 55, 0.24), rgba(45, 80, 55, 0) 30%),
-        linear-gradient(115deg, rgba(20, 38, 28, 0.82) 0%, rgba(42, 74, 53, 0.62) 42%, rgba(20, 38, 28, 0.78) 100%),
-        url("../../assets/backgrounds/WhatsApp Image 2026-06-08 at 17.28.27.jpeg") center/cover no-repeat;
-    filter: brightness(0.52) saturate(1.15) sepia(0.22) hue-rotate(88deg) contrast(1.08);
+        radial-gradient(circle at 18% 22%, rgba(61, 92, 66, 0.28), rgba(20, 38, 28, 0.06) 45%),
+        radial-gradient(circle at 82% 72%, rgba(42, 74, 53, 0.24), rgba(42, 74, 53, 0) 36%),
+        radial-gradient(circle at 10% 82%, rgba(45, 80, 55, 0.18), rgba(45, 80, 55, 0) 30%),
+        linear-gradient(115deg, rgba(20, 38, 28, 0.72) 0%, rgba(42, 74, 53, 0.48) 42%, rgba(20, 38, 28, 0.7) 100%),
+        url("../../assets/backgrounds/background.jpg") center/cover no-repeat;
+    filter: brightness(0.58) saturate(1.08) contrast(1.05);
     transform: scale(1.02);
     z-index: 1;
 }
@@ -83,8 +83,8 @@ body {
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(90deg, rgba(20, 38, 28, 0.72) 0%, rgba(42, 74, 53, 0.28) 45%, rgba(20, 38, 28, 0.68) 100%),
-        radial-gradient(circle at center, transparent 35%, rgba(10, 22, 15, 0.45) 100%);
+        linear-gradient(90deg, rgba(20, 38, 28, 0.62) 0%, rgba(42, 74, 53, 0.22) 45%, rgba(20, 38, 28, 0.58) 100%),
+        radial-gradient(circle at center, transparent 35%, rgba(10, 22, 15, 0.38) 100%);
     pointer-events: none;
 }
 
@@ -92,7 +92,7 @@ body {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(42, 74, 53, 0.28);
+    background: rgba(42, 74, 53, 0.18);
     mix-blend-mode: multiply;
     pointer-events: none;
 }
